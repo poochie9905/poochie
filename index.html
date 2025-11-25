@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POOCHINATOR</title>
+    <title>Pixel Cat Kitchen</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
@@ -42,38 +42,39 @@
 
         /* --- THE CAT --- */
         #cat {
-            /* 1. I made the cat slightly bigger so you can see him better */
-            width: 100px;  
-            height: 100px;
+            /* Adjust size if she looks too big/small */
+            width: 120px;  
+            height: 120px;
             
             position: absolute;
             
-            /* 2. FIXED POSITION: This lowers the cat to the floorboards */
-            bottom: 30px; 
+            /* FIXED: Lowered this value so she sits ON the floor */
+            bottom: 5%; 
             left: 50%;
             transform: translateX(-50%);
             
-            /* 3. SPRITE FIX: This ensures the strip fills the height */
+            /* FIXED: This forces the background to be exactly 4 frames wide */
             background-size: 400% 100%; 
             background-repeat: no-repeat;
             
-            /* Default Animation Settings */
-            /* We use steps(3) because we start at frame 1 and take 3 jumps to get to frame 4 */
-            animation: playSprite 0.8s steps(3) infinite;
+            /* FIXED: Switched back to steps(4) to stop the drifting */
+            animation: playSprite 0.8s steps(4) infinite;
+            
+            /* Hides the white box on your JPGs */
+            mix-blend-mode: multiply; 
         }
 
         /* --- SPRITE STATES --- */
-        /* Ensure these file names match your GitHub files exactly! */
+        /* Make sure these match your files exactly (lowercase/uppercase) */
         .state-idle  { background-image: url('idle.png'); }
         .state-eat   { background-image: url('eat.png'); }
         .state-drink { background-image: url('water.png'); }
         .state-play  { background-image: url('play.png'); }
 
-        /* 4. THE ANTI-STROBE ANIMATION */
-        /* Instead of sliding off into infinity, we pin 0% to Left and 100% to Right */
         @keyframes playSprite {
-            from { background-position-x: 0%; }
-            to { background-position-x: 100%; } 
+            from { background-position-x: 0; }
+            /* This moves exactly 4 frame-widths to the left. Stops the drift! */
+            to { background-position-x: -400%; } 
         }
 
         /* --- UI & BUTTONS --- */
