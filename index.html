@@ -42,39 +42,38 @@
 
         /* --- THE CAT --- */
         #cat {
-            /* Adjust size if she looks too big/small */
-            width: 120px;  
-            height: 120px;
+            /* 1. I made the cat slightly bigger so you can see him better */
+            width: 100px;  
+            height: 100px;
             
             position: absolute;
             
-            /* FIXED: Lowered this value so she sits ON the floor */
-            bottom: 5%; 
+            /* 2. FIXED POSITION: This lowers the cat to the floorboards */
+            bottom: 30px; 
             left: 50%;
             transform: translateX(-50%);
             
-            /* FIXED: This forces the background to be exactly 4 frames wide */
+            /* 3. SPRITE FIX: This ensures the strip fills the height */
             background-size: 400% 100%; 
             background-repeat: no-repeat;
             
-            /* FIXED: Switched back to steps(4) to stop the drifting */
-            animation: playSprite 0.8s steps(4) infinite;
-            
-            /* Hides the white box on your JPGs */
-            mix-blend-mode: multiply; 
+            /* Default Animation Settings */
+            /* We use steps(3) because we start at frame 1 and take 3 jumps to get to frame 4 */
+            animation: playSprite 0.8s steps(3) infinite;
         }
 
         /* --- SPRITE STATES --- */
-        /* Make sure these match your files exactly (lowercase/uppercase) */
+        /* Ensure these file names match your GitHub files exactly! */
         .state-idle  { background-image: url('idle.png'); }
         .state-eat   { background-image: url('eat.png'); }
         .state-drink { background-image: url('water.png'); }
         .state-play  { background-image: url('play.png'); }
 
+        /* 4. THE ANTI-STROBE ANIMATION */
+        /* Instead of sliding off into infinity, we pin 0% to Left and 100% to Right */
         @keyframes playSprite {
-            from { background-position-x: 0; }
-            /* This moves exactly 4 frame-widths to the left. Stops the drift! */
-            to { background-position-x: -400%; } 
+            from { background-position-x: 0%; }
+            to { background-position-x: 100%; } 
         }
 
         /* --- UI & BUTTONS --- */
