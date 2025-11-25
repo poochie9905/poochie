@@ -169,7 +169,7 @@
         /* CAT */
         #cat {
             width: 100px; height: 100px;
-            position: absolute; bottom: 5px; left: 10%; 
+            position: absolute; bottom: 2.5px; left: 10%; 
             transform: translateX(-50%);
             background-repeat: no-repeat;
             image-rendering: pixelated;
@@ -401,8 +401,8 @@
 
             moveInterval = setInterval(() => {
                 state.catPos += direction * 1; 
-                if (state.catPos < 0) state.catPos = 0;
-                if (state.catPos > 70) state.catPos = 70;
+                if (state.catPos < 10) state.catPos = 10;
+                if (state.catPos > 60) state.catPos = 60;
                 cat.style.left = state.catPos + '%';
             }, 20);
         }
