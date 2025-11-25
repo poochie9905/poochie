@@ -49,12 +49,12 @@
             position: absolute;
             
             /* 2. FIXED POSITION: This lowers the cat to the floorboards */
-            bottom: 30px; 
+            bottom: 5px; 
             left: 50%;
             transform: translateX(-50%);
             
             /* 3. SPRITE FIX: This ensures the strip fills the height */
-            background-size: 418px 100px; 
+            background-size: 400px 100px; 
             background-repeat: no-repeat;
             
             /* Default Animation Settings */
@@ -74,7 +74,7 @@
         /* Instead of sliding off into infinity, we pin 0% to Left and 100% to Right */
         @keyframes playSprite {
             from { background-position-x: 0px; }
-            to { background-position-x: -395px; } 
+            to { background-position-x: -300px; } 
         }
 
         /* --- UI & BUTTONS --- */
