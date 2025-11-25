@@ -8,32 +8,45 @@
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
         :root {
-            /* ADJUST THESE IF YOUR CAT LOOKS CUT OFF */
-            --sprite-size: 32px; /* Estimated frame size */
-            --scale: 3;          /* Make the cat bigger */
+            /* FIXED: Set to 32px based on your previous issue */
+            --sprite-size: 32px; 
+            --scale: 4;          
         }
 
         body {
             margin: 0;
             display: flex;
+            flex-direction: column; /* Stack items vertically */
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh; /* Allow scrolling if needed */
             background-color: #222;
             font-family: 'Press Start 2P', cursive;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        /* WRAPPER to hold everything neatly */
+        .main-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 600px; /* Limits width on big screens */
         }
 
         #game-container {
             position: relative;
-            width: 800px;
-            height: 600px;
+            width: 100%; /* Fits the phone width */
+            aspect-ratio: 4/3; /* Keeps the kitchen rectangular shape */
             background-image: url('bg-default.jpg');
             background-size: cover;
             background-position: center;
             border: 4px solid #fff;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
             overflow: hidden;
-            image-rendering: pixelated; /* Crucial for pixel art crispness */
+            image-rendering: pixelated; 
+            margin-bottom: 20px; /* Space between game and buttons */
         }
 
         /* --- UI STYLES --- */
@@ -43,18 +56,20 @@
             left: 10px;
             background: rgba(0, 0, 0, 0.7);
             color: white;
-            padding: 15px;
+            padding: 10px;
+            font-size: 0.7rem; /* Smaller text for mobile */
             border-radius: 8px;
             border: 2px solid white;
+            z-index: 10;
         }
 
         .stat-bar {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .bar-container {
-            width: 150px;
-            height: 10px;
+            width: 100px; /* Smaller bars for mobile */
+            height: 8px;
             background: #555;
             margin-top: 5px;
             border: 1px solid white;
@@ -66,23 +81,23 @@
             transition: width 0.5s;
         }
 
+        /* --- CONTROLS (NOW OUTSIDE) --- */
         .controls {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
             display: flex;
-            gap: 15px;
+            gap: 10px;
+            width: 100%;
+            justify-content: space-between;
         }
 
         button {
             font-family: 'Press Start 2P', cursive;
-            padding: 15px 20px;
+            padding: 20px 10px; /* Bigger touch area for fingers */
             cursor: pointer;
             background: #fff;
             border: 4px solid #000;
             box-shadow: 4px 4px 0px #000;
-            transition: transform 0.1s;
+            flex: 1; /* Buttons stretch to fill space evenly */
+            font-size: 0.8rem;
         }
 
         button:active {
@@ -95,42 +110,35 @@
             width: var(--sprite-size);
             height: var(--sprite-size);
             position: absolute;
-            bottom: 160px; /* Floor level */
+            bottom: 20%; /* Relative to floor height */
             left: 50%;
             transform: scale(var(--scale)) translateX(-50%);
+            transform-origin: bottom center;
             background-repeat: no-repeat;
-            /* Animation logic */
             animation: playSprite 0.8s steps(4) infinite; 
         }
 
-        /* --- ANIMATION STATES --- */
-        /* Note: Background-position-y selects the ROW of the sprite sheet */
-        
-        /* Sheet 1: Idle (Row 1) */
+        /* --- ANIMATIONS --- */
         .anim-idle {
             background-image: url('sprites-1.png');
             background-position-y: 0px; 
         }
         
-        /* Sheet 1: Eat (Row 4) */
         .anim-eat {
             background-image: url('sprites-1.png');
             background-position-y: calc(var(--sprite-size) * -3);
         }
 
-        /* Sheet 1: Drink (Row 5) */
         .anim-drink {
             background-image: url('sprites-1.png');
             background-position-y: calc(var(--sprite-size) * -4);
         }
 
-        /* Sheet 2: Play (Row 1) */
         .anim-play {
             background-image: url('sprites-2.png');
             background-position-y: 0px; 
         }
 
-        /* The Animation Keyframes: Moves horizontally through the frames */
         @keyframes playSprite {
             from { background-position-x: 0px; }
             to { background-position-x: calc(var(--sprite-size) * -4); }
@@ -140,23 +148,25 @@
 </head>
 <body>
 
-    <div id="game-container">
-        <div class="ui-panel">
-            <div class="stat-bar">
-                Hunger
-                <div class="bar-container"><div id="bar-hunger" class="bar-fill" style="background: #ff6b6b;"></div></div>
+    <div class="main-wrapper">
+        <div id="game-container">
+            <div class="ui-panel">
+                <div class="stat-bar">
+                    Hunger
+                    <div class="bar-container"><div id="bar-hunger" class="bar-fill" style="background: #ff6b6b;"></div></div>
+                </div>
+                <div class="stat-bar">
+                    Thirst
+                    <div class="bar-container"><div id="bar-thirst" class="bar-fill" style="background: #4ecdc4;"></div></div>
+                </div>
+                <div class="stat-bar">
+                    Fun
+                    <div class="bar-container"><div id="bar-fun" class="bar-fill" style="background: #ffe66d;"></div></div>
+                </div>
             </div>
-            <div class="stat-bar">
-                Thirst
-                <div class="bar-container"><div id="bar-thirst" class="bar-fill" style="background: #4ecdc4;"></div></div>
-            </div>
-            <div class="stat-bar">
-                Fun
-                <div class="bar-container"><div id="bar-fun" class="bar-fill" style="background: #ffe66d;"></div></div>
-            </div>
-        </div>
 
-        <div id="cat" class="anim-idle"></div>
+            <div id="cat" class="anim-idle"></div>
+        </div>
 
         <div class="controls">
             <button onclick="interact('feed')">FEED</button>
@@ -171,20 +181,18 @@
             hunger: 100,
             thirst: 100,
             fun: 100,
-            isBusy: false // Prevents clicking multiple buttons at once
+            isBusy: false 
         };
 
         const cat = document.getElementById('cat');
         const bg = document.getElementById('game-container');
         
-        // Bars
         const bars = {
             hunger: document.getElementById('bar-hunger'),
             thirst: document.getElementById('bar-thirst'),
             fun: document.getElementById('bar-fun')
         };
 
-        // --- GAME LOOP (Decreases stats) ---
         setInterval(() => {
             if(state.hunger > 0) state.hunger -= 1;
             if(state.thirst > 0) state.thirst -= 2;
@@ -198,48 +206,33 @@
             bars.fun.style.width = state.fun + '%';
         }
 
-        // --- INTERACTION LOGIC ---
         function interact(action) {
             if (state.isBusy) return;
             state.isBusy = true;
 
             if (action === 'feed') {
-                // 1. Change Background to Open Cabinet with Food
                 bg.style.backgroundImage = "url('bg-food.jpg')";
-                
-                // 2. Change Cat Animation
                 cat.className = 'anim-eat';
-                
-                // 3. Update Stats
                 state.hunger = Math.min(state.hunger + 40, 100);
 
             } else if (action === 'water') {
-                // 1. Change Background to Water
                 bg.style.backgroundImage = "url('bg-water.jpg')";
-                
-                // 2. Change Cat Animation
                 cat.className = 'anim-drink';
-                
-                // 3. Update Stats
                 state.thirst = Math.min(state.thirst + 40, 100);
 
             } else if (action === 'play') {
-                // Background stays default for play
                 cat.className = 'anim-play';
                 state.fun = Math.min(state.fun + 40, 100);
             }
 
             updateUI();
 
-            // --- RESET AFTER ACTION ---
-            // Wait 3 seconds, then return to idle state
             setTimeout(() => {
                 cat.className = 'anim-idle';
                 bg.style.backgroundImage = "url('bg-default.jpg')";
                 state.isBusy = false;
             }, 3000);
         }
-
     </script>
 </body>
 </html>
