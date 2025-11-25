@@ -31,7 +31,7 @@
             position: relative;
             width: 100%;
             aspect-ratio: 4/3;
-            background-image: url('bg-default.jpg'); /* Make sure this matches your file! */
+            background-image: url('bg-default.jpg');
             background-size: cover;
             background-position: center;
             border: 4px solid #fff;
@@ -42,26 +42,27 @@
 
         /* --- THE CAT --- */
         #cat {
-            width: 80px;  /* Size of the cat on screen */
+            width: 80px;  
             height: 80px;
             position: absolute;
             bottom: 15%;
             left: 50%;
             transform: translateX(-50%);
             
-            /* MAGIC FIX: This forces any strip of 4 cats to fit perfectly */
+            /* Fits the strip of 4 cats perfectly */
             background-size: 400% 100%; 
             background-repeat: no-repeat;
             
-            /* Default Animation */
-            background-image: url('idle.png'); 
+            /* NOTE: I removed 'background-image' from here so the classes below can work! */
+            
             animation: playSprite 0.8s steps(4) infinite;
             
-            /* (Optional) This tries to remove the white box if using JPGs */
+            /* Use 'multiply' if your images have white backgrounds to make them transparent */
             mix-blend-mode: multiply; 
         }
 
-        /* Define which file to use for each state */
+        /* --- SPRITE STATES --- */
+        /* IMPORTANT: Make sure these filenames match EXACTLY (capitalization matters!) */
         .state-idle  { background-image: url('idle.png'); }
         .state-eat   { background-image: url('eat.png'); }
         .state-drink { background-image: url('water.png'); }
@@ -69,7 +70,8 @@
 
         @keyframes playSprite {
             from { background-position-x: 0; }
-            to { background-position-x: 400%; } /* Slides through the 4 frames */
+            /* FIXED: Changed to NEGATIVE -400% to slide the correct direction */
+            to { background-position-x: -400%; } 
         }
 
         /* --- UI & BUTTONS --- */
@@ -80,6 +82,7 @@
             color: white; padding: 10px;
             border-radius: 8px; border: 2px solid white;
             font-size: 0.7rem;
+            z-index: 10; /* Ensures UI sits on top of cat */
         }
         .bar-container {
             width: 100px; height: 8px;
@@ -145,8 +148,8 @@
             if(state.isBusy) return;
             state.isBusy = true;
 
-            // Remove all state classes first
-            cat.classList.remove('state-idle', 'state-eat', 'state-drink', 'state-play');
+            // Remove all state classes first so we don't mix them up
+            cat.className = ''; 
 
             if (action === 'feed') {
                 bg.style.backgroundImage = "url('bg-food.jpg')";
@@ -165,8 +168,7 @@
 
             // Reset after 3 seconds
             setTimeout(() => {
-                cat.classList.remove('state-eat', 'state-drink', 'state-play');
-                cat.classList.add('state-idle');
+                cat.className = 'state-idle';
                 bg.style.backgroundImage = "url('bg-default.jpg')";
                 state.isBusy = false;
             }, 3000);
