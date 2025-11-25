@@ -4,149 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pixel Cat Kitchen</title>
-   <style>
+    <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-
-        :root {
-            /* We are locking the size to 48px to prevent math errors */
-            --sprite-size: 48px; 
-            --sheet-width: 192px; /* 48px * 4 columns */
-            --scale: 4;          
-        }
 
         body {
             margin: 0;
             display: flex;
-            flex-direction: column; 
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             background-color: #222;
             font-family: 'Press Start 2P', cursive;
             padding: 10px;
-            box-sizing: border-box;
         }
 
         .main-wrapper {
+            width: 100%;
+            max-width: 600px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100%;
-            max-width: 600px;
         }
 
         #game-container {
             position: relative;
-            width: 100%; 
-            aspect-ratio: 4/3; 
-            background-image: url('bg-default.jpg');
+            width: 100%;
+            aspect-ratio: 4/3;
+            background-image: url('bg-default.jpg'); /* Make sure this matches your file! */
             background-size: cover;
             background-position: center;
             border: 4px solid #fff;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
             overflow: hidden;
-            image-rendering: pixelated; 
-            margin-bottom: 20px; 
+            margin-bottom: 20px;
         }
 
-        .ui-panel {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
-            font-size: 0.7rem; 
-            border-radius: 8px;
-            border: 2px solid white;
-            z-index: 10;
-        }
-
-        .stat-bar { margin-bottom: 8px; }
-        .bar-container {
-            width: 100px; 
-            height: 8px;
-            background: #555;
-            margin-top: 5px;
-            border: 1px solid white;
-        }
-        .bar-fill {
-            height: 100%;
-            width: 100%;
-            transition: width 0.5s;
-        }
-
-        .controls {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-            justify-content: space-between;
-        }
-
-        button {
-            font-family: 'Press Start 2P', cursive;
-            padding: 20px 10px; 
-            cursor: pointer;
-            background: #fff;
-            border: 4px solid #000;
-            box-shadow: 4px 4px 0px #000;
-            flex: 1; 
-            font-size: 0.8rem;
-        }
-        button:active {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0px #000;
-        }
-
-        /* --- THE FIXED CAT STYLES --- */
+        /* --- THE CAT --- */
         #cat {
-            width: var(--sprite-size);
-            height: var(--sprite-size);
+            width: 80px;  /* Size of the cat on screen */
+            height: 80px;
             position: absolute;
-            bottom: 20%; 
+            bottom: 15%;
             left: 50%;
-            transform: scale(var(--scale)) translateX(-50%);
-            transform-origin: bottom center;
+            transform: translateX(-50%);
+            
+            /* MAGIC FIX: This forces any strip of 4 cats to fit perfectly */
+            background-size: 400% 100%; 
             background-repeat: no-repeat;
             
-            /* THIS IS THE FIX: We force the image to be exactly 192px wide.
-               This aligns the rows perfectly with the height math. */
-            background-size: var(--sheet-width) auto;
+            /* Default Animation */
+            background-image: url('idle.jpg'); 
+            animation: playSprite 0.8s steps(4) infinite;
             
-            image-rendering: pixelated;
-            animation: playSprite 0.8s steps(4) infinite; 
+            /* (Optional) This tries to remove the white box if using JPGs */
+            mix-blend-mode: multiply; 
         }
 
-        /* --- ANIMATIONS --- */
-        /* Since we locked the size to 48px, we can use exact pixel math now */
-        
-        .anim-idle {
-            background-image: url('sprites-1.png');
-            background-position-y: 0px; 
-        }
-        
-        .anim-eat {
-            background-image: url('sprites-1.png');
-            /* Row 4: 48 * 3 = 144px */
-            background-position-y: -144px;
-        }
-
-        .anim-drink {
-            background-image: url('sprites-1.png');
-            /* Row 5: 48 * 4 = 192px */
-            background-position-y: -192px;
-        }
-
-        .anim-play {
-            background-image: url('sprites-2.png');
-            background-position-y: 0px; 
-        }
+        /* Define which file to use for each state */
+        .state-idle  { background-image: url('idle.jpg'); }
+        .state-eat   { background-image: url('eat.jpg'); }
+        .state-drink { background-image: url('water.jpg'); }
+        .state-play  { background-image: url('play.jpg'); }
 
         @keyframes playSprite {
-            from { background-position-x: 0px; }
-            /* Move exactly one sheet width to the left */
-            to { background-position-x: calc(var(--sheet-width) * -1); } 
+            from { background-position-x: 0; }
+            to { background-position-x: 400%; } /* Slides through the 4 frames */
         }
+
+        /* --- UI & BUTTONS --- */
+        .ui-panel {
+            position: absolute;
+            top: 10px; left: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white; padding: 10px;
+            border-radius: 8px; border: 2px solid white;
+            font-size: 0.7rem;
+        }
+        .bar-container {
+            width: 100px; height: 8px;
+            background: #555; margin-top: 5px; margin-bottom: 8px;
+            border: 1px solid white;
+        }
+        .bar-fill { height: 100%; width: 100%; transition: width 0.5s; }
+        
+        .controls { width: 100%; display: flex; gap: 10px; }
+        button {
+            flex: 1; padding: 20px;
+            font-family: 'Press Start 2P', cursive;
+            background: #fff; border: 4px solid #000;
+            box-shadow: 4px 4px 0 #000; cursor: pointer;
+        }
+        button:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #000; }
     </style>
 </head>
 <body>
@@ -154,21 +103,11 @@
     <div class="main-wrapper">
         <div id="game-container">
             <div class="ui-panel">
-                <div class="stat-bar">
-                    Hunger
-                    <div class="bar-container"><div id="bar-hunger" class="bar-fill" style="background: #ff6b6b;"></div></div>
-                </div>
-                <div class="stat-bar">
-                    Thirst
-                    <div class="bar-container"><div id="bar-thirst" class="bar-fill" style="background: #4ecdc4;"></div></div>
-                </div>
-                <div class="stat-bar">
-                    Fun
-                    <div class="bar-container"><div id="bar-fun" class="bar-fill" style="background: #ffe66d;"></div></div>
-                </div>
+                Hunger <div class="bar-container"><div id="bar-hunger" class="bar-fill" style="background:#ff6b6b"></div></div>
+                Thirst <div class="bar-container"><div id="bar-thirst" class="bar-fill" style="background:#4ecdc4"></div></div>
+                Fun <div class="bar-container"><div id="bar-fun" class="bar-fill" style="background:#ffe66d"></div></div>
             </div>
-
-            <div id="cat" class="anim-idle"></div>
+            <div id="cat" class="state-idle"></div>
         </div>
 
         <div class="controls">
@@ -188,6 +127,7 @@
             fun: document.getElementById('bar-fun')
         };
 
+        // Stat drain loop
         setInterval(() => {
             if(state.hunger > 0) state.hunger -= 1;
             if(state.thirst > 0) state.thirst -= 2;
@@ -202,26 +142,31 @@
         }
 
         function interact(action) {
-            if (state.isBusy) return;
+            if(state.isBusy) return;
             state.isBusy = true;
+
+            // Remove all state classes first
+            cat.classList.remove('state-idle', 'state-eat', 'state-drink', 'state-play');
 
             if (action === 'feed') {
                 bg.style.backgroundImage = "url('bg-food.jpg')";
-                cat.className = 'anim-eat';
+                cat.classList.add('state-eat');
                 state.hunger = Math.min(state.hunger + 40, 100);
             } else if (action === 'water') {
                 bg.style.backgroundImage = "url('bg-water.jpg')";
-                cat.className = 'anim-drink';
+                cat.classList.add('state-drink');
                 state.thirst = Math.min(state.thirst + 40, 100);
             } else if (action === 'play') {
-                cat.className = 'anim-play';
+                cat.classList.add('state-play');
                 state.fun = Math.min(state.fun + 40, 100);
             }
 
             updateUI();
 
+            // Reset after 3 seconds
             setTimeout(() => {
-                cat.className = 'anim-idle';
+                cat.classList.remove('state-eat', 'state-drink', 'state-play');
+                cat.classList.add('state-idle');
                 bg.style.backgroundImage = "url('bg-default.jpg')";
                 state.isBusy = false;
             }, 3000);
