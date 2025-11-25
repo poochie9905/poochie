@@ -8,37 +8,36 @@
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
         :root {
-            /* FIXED: Set to 32px based on your previous issue */
-            --sprite-size: 32px; 
+            /* 48px is a good balance for mobile visibility */
+            --sprite-size: 48px; 
             --scale: 4;          
         }
 
         body {
             margin: 0;
             display: flex;
-            flex-direction: column; /* Stack items vertically */
+            flex-direction: column; 
             justify-content: center;
             align-items: center;
-            min-height: 100vh; /* Allow scrolling if needed */
+            min-height: 100vh;
             background-color: #222;
             font-family: 'Press Start 2P', cursive;
             padding: 10px;
             box-sizing: border-box;
         }
 
-        /* WRAPPER to hold everything neatly */
         .main-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 600px; /* Limits width on big screens */
+            max-width: 600px;
         }
 
         #game-container {
             position: relative;
-            width: 100%; /* Fits the phone width */
-            aspect-ratio: 4/3; /* Keeps the kitchen rectangular shape */
+            width: 100%; 
+            aspect-ratio: 4/3; 
             background-image: url('bg-default.jpg');
             background-size: cover;
             background-position: center;
@@ -46,10 +45,9 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
             overflow: hidden;
             image-rendering: pixelated; 
-            margin-bottom: 20px; /* Space between game and buttons */
+            margin-bottom: 20px; 
         }
 
-        /* --- UI STYLES --- */
         .ui-panel {
             position: absolute;
             top: 10px;
@@ -57,31 +55,26 @@
             background: rgba(0, 0, 0, 0.7);
             color: white;
             padding: 10px;
-            font-size: 0.7rem; /* Smaller text for mobile */
+            font-size: 0.7rem; 
             border-radius: 8px;
             border: 2px solid white;
             z-index: 10;
         }
 
-        .stat-bar {
-            margin-bottom: 8px;
-        }
-
+        .stat-bar { margin-bottom: 8px; }
         .bar-container {
-            width: 100px; /* Smaller bars for mobile */
+            width: 100px; 
             height: 8px;
             background: #555;
             margin-top: 5px;
             border: 1px solid white;
         }
-
         .bar-fill {
             height: 100%;
             width: 100%;
             transition: width 0.5s;
         }
 
-        /* --- CONTROLS (NOW OUTSIDE) --- */
         .controls {
             display: flex;
             gap: 10px;
@@ -91,30 +84,34 @@
 
         button {
             font-family: 'Press Start 2P', cursive;
-            padding: 20px 10px; /* Bigger touch area for fingers */
+            padding: 20px 10px; 
             cursor: pointer;
             background: #fff;
             border: 4px solid #000;
             box-shadow: 4px 4px 0px #000;
-            flex: 1; /* Buttons stretch to fill space evenly */
+            flex: 1; 
             font-size: 0.8rem;
         }
-
         button:active {
             transform: translate(2px, 2px);
             box-shadow: 2px 2px 0px #000;
         }
 
-        /* --- CAT SPRITE STYLES --- */
+        /* --- THE CRITICAL FIX IS HERE --- */
         #cat {
             width: var(--sprite-size);
             height: var(--sprite-size);
             position: absolute;
-            bottom: 20%; /* Relative to floor height */
+            bottom: 20%; 
             left: 50%;
             transform: scale(var(--scale)) translateX(-50%);
             transform-origin: bottom center;
             background-repeat: no-repeat;
+            
+            /* THIS LINE FIXES THE GIANT PIXELS: */
+            background-size: 400%; 
+            
+            image-rendering: pixelated;
             animation: playSprite 0.8s steps(4) infinite; 
         }
 
@@ -141,9 +138,8 @@
 
         @keyframes playSprite {
             from { background-position-x: 0px; }
-            to { background-position-x: calc(var(--sprite-size) * -4); }
+            to { background-position-x: -400%; } /* Changed to match background-size */
         }
-
     </style>
 </head>
 <body>
@@ -176,17 +172,9 @@
     </div>
 
     <script>
-        // Game State
-        const state = {
-            hunger: 100,
-            thirst: 100,
-            fun: 100,
-            isBusy: false 
-        };
-
+        const state = { hunger: 100, thirst: 100, fun: 100, isBusy: false };
         const cat = document.getElementById('cat');
         const bg = document.getElementById('game-container');
-        
         const bars = {
             hunger: document.getElementById('bar-hunger'),
             thirst: document.getElementById('bar-thirst'),
@@ -214,12 +202,10 @@
                 bg.style.backgroundImage = "url('bg-food.jpg')";
                 cat.className = 'anim-eat';
                 state.hunger = Math.min(state.hunger + 40, 100);
-
             } else if (action === 'water') {
                 bg.style.backgroundImage = "url('bg-water.jpg')";
                 cat.className = 'anim-drink';
                 state.thirst = Math.min(state.thirst + 40, 100);
-
             } else if (action === 'play') {
                 cat.className = 'anim-play';
                 state.fun = Math.min(state.fun + 40, 100);
