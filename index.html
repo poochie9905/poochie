@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pixel Cat Kitchen</title>
-    <style>
+   <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
         :root {
-            /* 48px is a good balance for mobile visibility */
+            /* We are locking the size to 48px to prevent math errors */
             --sprite-size: 48px; 
+            --sheet-width: 192px; /* 48px * 4 columns */
             --scale: 4;          
         }
 
@@ -97,7 +98,7 @@
             box-shadow: 2px 2px 0px #000;
         }
 
-        /* --- THE CRITICAL FIX IS HERE --- */
+        /* --- THE FIXED CAT STYLES --- */
         #cat {
             width: var(--sprite-size);
             height: var(--sprite-size);
@@ -108,14 +109,17 @@
             transform-origin: bottom center;
             background-repeat: no-repeat;
             
-            /* THIS LINE FIXES THE GIANT PIXELS: */
-            background-size: 400%; 
+            /* THIS IS THE FIX: We force the image to be exactly 192px wide.
+               This aligns the rows perfectly with the height math. */
+            background-size: var(--sheet-width) auto;
             
             image-rendering: pixelated;
             animation: playSprite 0.8s steps(4) infinite; 
         }
 
         /* --- ANIMATIONS --- */
+        /* Since we locked the size to 48px, we can use exact pixel math now */
+        
         .anim-idle {
             background-image: url('sprites-1.png');
             background-position-y: 0px; 
@@ -123,12 +127,14 @@
         
         .anim-eat {
             background-image: url('sprites-1.png');
-            background-position-y: calc(var(--sprite-size) * -3);
+            /* Row 4: 48 * 3 = 144px */
+            background-position-y: -144px;
         }
 
         .anim-drink {
             background-image: url('sprites-1.png');
-            background-position-y: calc(var(--sprite-size) * -4);
+            /* Row 5: 48 * 4 = 192px */
+            background-position-y: -192px;
         }
 
         .anim-play {
@@ -138,7 +144,8 @@
 
         @keyframes playSprite {
             from { background-position-x: 0px; }
-            to { background-position-x: -400%; } /* Changed to match background-size */
+            /* Move exactly one sheet width to the left */
+            to { background-position-x: calc(var(--sheet-width) * -1); } 
         }
     </style>
 </head>
