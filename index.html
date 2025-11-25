@@ -42,36 +42,38 @@
 
         /* --- THE CAT --- */
         #cat {
-            width: 80px;  
-            height: 80px;
+            /* 1. I made the cat slightly bigger so you can see him better */
+            width: 100px;  
+            height: 100px;
+            
             position: absolute;
-            bottom: 15%;
+            
+            /* 2. FIXED POSITION: This lowers the cat to the floorboards */
+            bottom: 30px; 
             left: 50%;
             transform: translateX(-50%);
             
-            /* Fits the strip of 4 cats perfectly */
+            /* 3. SPRITE FIX: This ensures the strip fills the height */
             background-size: 400% 100%; 
             background-repeat: no-repeat;
             
-            /* NOTE: I removed 'background-image' from here so the classes below can work! */
-            
-            animation: playSprite 0.8s steps(4) infinite;
-            
-            /* Use 'multiply' if your images have white backgrounds to make them transparent */
-            mix-blend-mode: multiply; 
+            /* Default Animation Settings */
+            /* We use steps(3) because we start at frame 1 and take 3 jumps to get to frame 4 */
+            animation: playSprite 0.8s steps(3) infinite;
         }
 
         /* --- SPRITE STATES --- */
-        /* IMPORTANT: Make sure these filenames match EXACTLY (capitalization matters!) */
+        /* Ensure these file names match your GitHub files exactly! */
         .state-idle  { background-image: url('idle.png'); }
         .state-eat   { background-image: url('eat.png'); }
         .state-drink { background-image: url('water.png'); }
         .state-play  { background-image: url('play.png'); }
 
+        /* 4. THE ANTI-STROBE ANIMATION */
+        /* Instead of sliding off into infinity, we pin 0% to Left and 100% to Right */
         @keyframes playSprite {
-            from { background-position-x: 0; }
-            /* FIXED: Changed to NEGATIVE -400% to slide the correct direction */
-            to { background-position-x: -400%; } 
+            from { background-position-x: 0%; }
+            to { background-position-x: 100%; } 
         }
 
         /* --- UI & BUTTONS --- */
@@ -82,7 +84,7 @@
             color: white; padding: 10px;
             border-radius: 8px; border: 2px solid white;
             font-size: 0.7rem;
-            z-index: 10; /* Ensures UI sits on top of cat */
+            z-index: 10;
         }
         .bar-container {
             width: 100px; height: 8px;
@@ -148,8 +150,8 @@
             if(state.isBusy) return;
             state.isBusy = true;
 
-            // Remove all state classes first so we don't mix them up
-            cat.className = ''; 
+            // Clear class list properly
+            cat.className = '';
 
             if (action === 'feed') {
                 bg.style.backgroundImage = "url('bg-food.jpg')";
@@ -166,7 +168,6 @@
 
             updateUI();
 
-            // Reset after 3 seconds
             setTimeout(() => {
                 cat.className = 'state-idle';
                 bg.style.backgroundImage = "url('bg-default.jpg')";
