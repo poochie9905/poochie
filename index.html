@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Cat Kitchen</title>
+    <title>Scar's Pet World</title>
     <style>
-        /* Importing 'Press Start 2P' for the game and 'Titan One' for the cloudy title */
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Titan+One&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
         body {
             margin: 0;
@@ -15,16 +14,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            
-            /* HOT PINK DIAGONAL STRIPES */
-            background: repeating-linear-gradient(
-                45deg,
-                #FF69B4,
-                #FF69B4 30px,
-                #FF1493 30px,
-                #FF1493 60px
-            );
-            
+            background-color: #222;
             font-family: 'Press Start 2P', cursive;
             padding: 10px;
         }
@@ -37,28 +27,6 @@
             align-items: center;
         }
 
-        /* --- NEW TITLE BANNER --- */
-        .title-banner {
-            background-color: white;
-            padding: 15px 30px;
-            border-radius: 50px; /* Makes it look like a cloud/bubble */
-            border: 4px solid #fff;
-            box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
-            margin-bottom: 20px;
-            text-align: center;
-            width: 90%; /* Fits nicely above game */
-        }
-
-        .title-text {
-            font-family: 'Titan One', cursive; /* The Cloudy Font */
-            font-size: 2rem;
-            color: #FF1493; /* Darker Pink text */
-            margin: 0;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        /* --- GAME AREA --- */
         #game-container {
             position: relative;
             width: 100%;
@@ -70,37 +38,42 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
             overflow: hidden;
             margin-bottom: 20px;
-            
-            background-color: #000; 
         }
 
         /* --- THE CAT --- */
         #cat {
-            width: 120px;  
-            height: 120px;
+            /* 1. I made the cat slightly bigger so you can see him better */
+            width: 80px;  
+            height: 100px;
+            
             position: absolute;
-            bottom: 5%; 
+            
+            /* 2. FIXED POSITION: This lowers the cat to the floorboards */
+            bottom: 10px; 
             left: 50%;
             transform: translateX(-50%);
             
+            /* 3. SPRITE FIX: This ensures the strip fills the height */
             background-size: 400% 100%; 
             background-repeat: no-repeat;
             
-            /* FASTER ANIMATION: 0.4s */
-            animation: playSprite 0.4s steps(4) infinite;
-            
-            mix-blend-mode: multiply; 
+            /* Default Animation Settings */
+            /* We use steps(3) because we start at frame 1 and take 3 jumps to get to frame 4 */
+            animation: playSprite 0.8s steps(3) infinite;
         }
 
         /* --- SPRITE STATES --- */
+        /* Ensure these file names match your GitHub files exactly! */
         .state-idle  { background-image: url('idle.png'); }
         .state-eat   { background-image: url('eat.png'); }
         .state-drink { background-image: url('water.png'); }
         .state-play  { background-image: url('play.png'); }
 
+        /* 4. THE ANTI-STROBE ANIMATION */
+        /* Instead of sliding off into infinity, we pin 0% to Left and 100% to Right */
         @keyframes playSprite {
-            from { background-position-x: 0; }
-            to { background-position-x: -400%; } 
+            from { background-position-x: 0%; }
+            to { background-position-x: 100%; } 
         }
 
         /* --- UI & BUTTONS --- */
@@ -124,10 +97,7 @@
         button {
             flex: 1; padding: 20px;
             font-family: 'Press Start 2P', cursive;
-            
-            background: #fff; 
-            
-            border: 4px solid #000;
+            background: #fff; border: 4px solid #000;
             box-shadow: 4px 4px 0 #000; cursor: pointer;
         }
         button:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #000; }
@@ -136,12 +106,6 @@
 <body>
 
     <div class="main-wrapper">
-        
-        <!-- NEW TITLE CONTAINER -->
-        <div class="title-banner">
-            <h1 class="title-text">Scar's Pet World</h1>
-        </div>
-
         <div id="game-container">
             <div class="ui-panel">
                 Hunger <div class="bar-container"><div id="bar-hunger" class="bar-fill" style="background:#ff6b6b"></div></div>
@@ -168,6 +132,7 @@
             fun: document.getElementById('bar-fun')
         };
 
+        // Stat drain loop
         setInterval(() => {
             if(state.hunger > 0) state.hunger -= 1;
             if(state.thirst > 0) state.thirst -= 2;
@@ -185,7 +150,8 @@
             if(state.isBusy) return;
             state.isBusy = true;
 
-            cat.className = ''; 
+            // Clear class list properly
+            cat.className = '';
 
             if (action === 'feed') {
                 bg.style.backgroundImage = "url('bg-food.jpg')";
